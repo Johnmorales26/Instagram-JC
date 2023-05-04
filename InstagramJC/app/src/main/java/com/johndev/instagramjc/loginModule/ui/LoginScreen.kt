@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,32 +46,44 @@ import com.johndev.instagramjc.R
 
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel) {
+    val isLoading: Boolean by loginViewModel.isLoading.observeAsState(initial = false)
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(getGradientBrush())
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Header(
+        if (isLoading) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
-            Body(
-                loginViewModel,
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
-            Footer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Header(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
+                Body(
+                    loginViewModel,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
+                Footer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
+            }
         }
     }
 }
@@ -140,14 +153,14 @@ fun Body(loginViewModel: LoginViewModel, modifier: Modifier) {
             loginViewModel.onLoginChanged(email = email, password = password)
         }
         Spacer(modifier = Modifier.size(8.dp))
-        LoginButton(isLoginEnable)
+        LoginButton(isLoginEnable, loginViewModel)
         Spacer(modifier = Modifier.size(4.dp))
         ForgotPassword()
     }
 }
 
 @Composable
-fun LoginButton(loginEnable: Boolean) {
+fun LoginButton(loginEnable: Boolean, loginViewModel: LoginViewModel) {
     Button(
         shape = RoundedCornerShape(4.dp),
         modifier = Modifier.fillMaxWidth(),
@@ -158,7 +171,7 @@ fun LoginButton(loginEnable: Boolean) {
             disabledContentColor = Color.White
         ),
         enabled = loginEnable,
-        onClick = { }
+        onClick = { loginViewModel.onLoginSelected() }
     ) {
         Text(text = "Iniciar sesión")
     }
