@@ -1,11 +1,10 @@
 package com.johndev.instagramjc.loginModule.data
 
 import com.johndev.instagramjc.loginModule.data.network.LoginService
+import javax.inject.Inject
 
-class LoginRepository {
+class LoginRepository @Inject constructor(private val loginService: LoginService) {
 
-    private val api = LoginService()
-
-    suspend fun doLogin(user: String, password: String) = api.doLogin(user, password)
+    suspend fun doLogin(user: String, password: String) = loginService.doLogin(user, password)
 
 }
